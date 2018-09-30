@@ -1,73 +1,62 @@
-Name:       dolphin-emu
-Summary:    Dolphin Emulator
-Version:    5.0
-Release:    %(date +%s)
-Group:      System/Emulators/Other
-License:    GPL-2.0
-URL:        https://dolphin-emu.org/
-BuildArch:  x86_64 armv7l aarch64
-
+%define  timestamp %(date +%%Y%%m%%d%%H%%M%%S)
 %define  debug_package %{nil}
 
-BuildRequires:  desktop-file-utils
-BuildRequires:  cmake >= 2.8
-BuildRequires:  gcc-c++
-BuildRequires:  gtk2-devel
-BuildRequires:  pkgconfig(alsa)
-BuildRequires:  pkgconfig(ao)
-BuildRequires:  pkgconfig(bluez)
-BuildRequires:  pkgconfig(libpulse)
-BuildRequires:  pkgconfig(xrandr)
-BuildRequires:  pkgconfig(zlib)
+Name:       dolphin-emu
+Summary:    A GameCube and Wii Emulator
+Version:    master
+Release:    %{timestamp}%{?dist}
+Group:      System/Emulators/Other
+License:    GPL-2.0
+URL:        https://%{name}.org/
+BuildArch:	x86_64 amd64
 
-%if 0%{?fedora}
-BuildRequires:  libusb-devel
-BuildRequires:  lzo-devel
-BuildRequires:  miniupnpc-devel
-BuildRequires:  openal-soft-devel
-BuildRequires:  mbedtls-devel
-BuildRequires:  SDL2-devel
-BuildRequires:  SFML-devel
-BuildRequires:  SOIL-devel
-BuildRequires:  soundtouch-devel
-BuildRequires:  systemd-devel
+BuildRequires:	git
+BuildRequires:  mesa-libGL-devel
+BuildRequires:  libXi-devel
+BuildRequires:  libXrandr-devel
 BuildRequires:  libevdev-devel
-BuildRequires:	libSM-devel
-BuildRequires:	mesa-libGL-devel
-BuildRequires:	qt5-devel
-%endif
+BuildRequires:  systemd-devel
+BuildRequires:  pugixml-devel
+BuildRequires:  enet-devel
+BuildRequires:  zlib-devel
+BuildRequires:  lzo-devel
+BuildRequires:  libpng-devel
+BuildRequires:  libusb-devel
+BuildRequires:  SFML-devel
+BuildRequires:  miniupnpc-devel
+BuildRequires:  mbedtls-devel
+BuildRequires:  libcurl-devel
+BuildRequires:  hidapi-devel
+BuildRequires:  alsa-lib-devel
+BuildRequires:  pulseaudio-libs-devel
+BuildRequires:  bluez-libs-devel
+BuildRequires:  qt5-devel
 
 %description
-Dolphin is an emulator for two Nintendo video game consoles, GameCube and the Wii.
-It allows PC gamers to enjoy games for these two consoles in full HD with several
-enhancements such as compatibility with all PC controllers, turbo speed,
-networked multiplayer, and more.
+Dolphin-emu is an emulator for two Nintendo video game consoles, GameCube and the Wii.
+It allows PC gamers to enjoy games for these two consoles in full HD with several enhancements such as compatibility with all PC controllers, turbo speed, networked multiplayer, and more.
 Most games run perfectly or with minor bugs.
 
 %prep
-curl -Lo master.zip https://github.com/dolphin-emu/dolphin/archive/master.zip
-unzip master.zip
-rm -rf master.zip
-mv dolphin-master/* ./
-rm -rf dolphin-master
+%{__git} clone --depth 1 https://github.com/%{name}/dolphin.git .
 
 %build
-export CCFLAGS='%{optflags}'
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_WX=OFF
-make %{?_smp_mflags}
+%cmake . -DBUILD_SHARED_LIBS:BOOL=OFF -DUSE_SHARED_ENET=ON
+%make_build
 
 %install
-export CCFLAGS='%{optflags}'
-make %{?_smp_mflags} install DESTDIR="%{?buildroot}"
+%make_install
+
+# Removing discord development stuff
+rm -rf %{buildroot}%{_libdir}/*
+rm -rf %{buildroot}%{_includedir}/*
 
 %files
-%defattr(-,root,root,-)
-%doc license.txt Readme.md
+%license license.txt
+%doc Readme.md
 %{_bindir}/*
 %{_datadir}/*
-%{_mandir}/*
-
-%clean
-rm -rf %{buildroot}
 
 %changelog
+* Sun Sep 30 2018 Victor Oliveira <victor.oliveira@gmx.com>
+- Complete rewrite of spec file according to RPM Packaging guide
