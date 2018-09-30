@@ -3,8 +3,8 @@
 
 Name:       dolphin-emu
 Summary:    A GameCube and Wii Emulator
-Version:    5.0.git
-Release:    %{timestamp}%{?dist}
+Version:    %{timestamp}
+Release:    git%{?dist}
 Group:      System/Emulators/Other
 License:    GPL-2.0
 URL:        https://%{name}.org/
