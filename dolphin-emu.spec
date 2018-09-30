@@ -1,4 +1,4 @@
-%define  timestamp %(date +%%Y%%m%%d%%H%%M%%S)
+%define  timestamp %(date -u +%%Y%%m%%d%%H%%M%%S)
 %define  debug_package %{nil}
 
 Name:       dolphin-emu
