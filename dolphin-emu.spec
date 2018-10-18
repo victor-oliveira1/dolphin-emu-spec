@@ -1,10 +1,10 @@
-%define  timestamp %(date -u +%%Y%%m%%d%%H%%M%%S)
+%define  timestamp %(date -u +%%Y%%m%%d%%H%%M)
 %define  debug_package %{nil}
 
 Name:       dolphin-emu
 Summary:    A GameCube and Wii Emulator
-Version:    %{timestamp}git
-Release:    1%{?dist}
+Version:    5.0.git%{timestamp}git
+Release:    2%{?dist}
 Group:      System/Emulators/Other
 License:    GPL-2.0
 URL:        https://%{name}.org/
@@ -58,5 +58,8 @@ rm -rf %{buildroot}%{_includedir}/*
 %{_datadir}/*
 
 %changelog
+* Thu Oct 18 2018 Victor Oliveira <victor.oliveira@gmx.com>
+- Minor change in versioning
+
 * Sun Sep 30 2018 Victor Oliveira <victor.oliveira@gmx.com>
 - Complete rewrite of spec file according to RPM Packaging guide
